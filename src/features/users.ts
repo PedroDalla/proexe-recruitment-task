@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { User } from "../interfaces/user";
 
+let nextId = 0;
+
 export const userSlice = createSlice({
   name: "users",
   initialState: { value: [] as User[] },
@@ -10,7 +12,13 @@ export const userSlice = createSlice({
     },
 
     addUser: (state, action: { payload: User; type: string }) => {
-      state.value.push(action.payload);
+        if(nextId == 0) {
+            nextId = state.value.length + 1
+        } else {
+            nextId++
+        }
+        
+        state.value.push({...action.payload, id: nextId});
     },
 
     deleteUser: (state, action: { payload: number; type: string }) => {

@@ -63,7 +63,7 @@ export const UserForm = ({users, handlePopup}: UserFormParams): JSX.Element => {
                 }
             })
         } else {
-            dispatch(addUser({...item, id: users.length + 1, address: {city: item.city}}))
+            dispatch(addUser({...item, id: 0, address: {city: item.city}}))
             handlePopup(true, {
                 message: 'User successfully created',
                 type: 'confirm',
