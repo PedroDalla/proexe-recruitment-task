@@ -1,4 +1,6 @@
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { deleteUser } from "../../../features/users";
 import { User } from "../../../interfaces/user";
 import { Button } from "../../Button";
 import { PopupConfig } from "../../Popup";
@@ -11,6 +13,7 @@ interface UserListItemProps{
 //This is a subcomponent that renders a table row with the user information
 export const UserListItem = ({user, handlePopup}: UserListItemProps): JSX.Element => {
   const history = useHistory()
+  const dispatch = useDispatch()
   
   function handleEdit(){
     history.push(`/form/${user.id}`)
@@ -21,7 +24,14 @@ export const UserListItem = ({user, handlePopup}: UserListItemProps): JSX.Elemen
       message: "Are you sure you wish to delete this user?",
       type: 'yesno',
       onyes: () => {
-        alert('User deleted!')
+        dispatch(deleteUser(user.id))
+        handlePopup(true, {
+          message: "User successfully deleted",
+          type: "confirm",
+          onconfirm: () => {
+            handlePopup(false)
+          }
+        })
       }
     })
   }

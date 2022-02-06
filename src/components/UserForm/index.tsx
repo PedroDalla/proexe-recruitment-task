@@ -1,5 +1,7 @@
 import { FormEvent, useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
 import { useParams, useHistory } from "react-router-dom"
+import { addUser, updateUser } from "../../features/users"
 import { User } from "../../interfaces/user"
 import { Button } from "../Button"
 import { PopupConfig } from "../Popup"
@@ -13,6 +15,7 @@ interface UserFormParams {
 export const UserForm = ({users, handlePopup}: UserFormParams): JSX.Element => {
     const {id} = useParams<{id: string | undefined}>()
     const history = useHistory()
+    const dispatch = useDispatch()
 
     const [item, setItem] = useState({
         name: '',
@@ -48,10 +51,19 @@ export const UserForm = ({users, handlePopup}: UserFormParams): JSX.Element => {
                 message: 'Are you sure you wish to commit these changes?',
                 type: 'yesno',
                 onyes: () => {
-                    alert('User changed!')
+                    dispatch(updateUser({...item, id: Number(id), address: {city: item.city}}))
+                    handlePopup(true, {
+                        message: 'User updated successfully',
+                        type: 'confirm',
+                        onconfirm: () => {
+                            history.push('/')
+                            handlePopup(false)
+                    }
+                    })
                 }
             })
         } else {
+            dispatch(addUser({...item, id: users.length + 1, address: {city: item.city}}))
             handlePopup(true, {
                 message: 'User successfully created',
                 type: 'confirm',
